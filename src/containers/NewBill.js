@@ -24,10 +24,11 @@ export default class NewBill {
     const filePath = e.target.value.split(/\\/g);
     const fileName = filePath[filePath.length - 1];
 
+    const fileFormat = fileName.substring(fileName.lastIndexOf(".") + 1);
     const authorizedFormats = ["jpg", "jpeg", "png", "gif"];
-    const fileFormat = fileName.substring(lastIndexOf(".") + 1);
 
     if (authorizedFormats.indexOf(fileFormat) === -1) {
+      console.log("Wrong format. Only jpeg, jpg, png and gif allowed");
       return;
     }
 
