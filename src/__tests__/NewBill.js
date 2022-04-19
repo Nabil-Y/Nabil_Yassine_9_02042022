@@ -2,17 +2,45 @@
  * @jest-environment jsdom
  */
 
-import { screen } from "@testing-library/dom"
-import NewBillUI from "../views/NewBillUI.js"
-import NewBill from "../containers/NewBill.js"
+import { fireEvent, screen } from "@testing-library/dom";
+import NewBillUI from "../views/NewBillUI.js";
+import NewBill from "../containers/NewBill.js";
+import { localStorageMock } from "../__mocks__/localStorage.js";
+import { ROUTES } from "../constants/routes.js";
 
+describe("Given I am on NewBill Page", () => {
+  describe("When I click on the submit button", () => {
+    test("Then handleSubmit function should be called", () => {
+      Object.defineProperty(window, "localStorage", {
+        value: localStorageMock,
+      });
+      window.localStorage.setItem(
+        "user",
+        JSON.stringify({
+          type: "Employee",
+        })
+      );
 
-describe("Given I am connected as an employee", () => {
-  describe("When I am on NewBill Page", () => {
-    test("Then ...", () => {
-      const html = NewBillUI()
-      document.body.innerHTML = html
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname });
+      };
+
+      const html = NewBillUI();
+      document.body.innerHTML = html;
+
+      const newBillMock = new NewBill({
+        document,
+        onNavigate,
+        store: null,
+        localStorage: localStorageMock,
+      });
+
       //to-do write assertion
-    })
-  })
-})
+      const submitButton = screen.getByText("Envoyer");
+      const handleSubmitMock = jest.fn(() => newBillMock.handleSubmit);
+      submitButton.addEventListener("click", handleSubmitMock);
+      fireEvent.click(submitButton);
+      expect(handleSubmitMock).toHaveBeenCalled();
+    });
+  });
+});

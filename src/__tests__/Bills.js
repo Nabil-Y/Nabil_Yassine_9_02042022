@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { fireEvent, screen, waitFor } from "@testing-library/dom";
+import { fireEvent, screen, wait, waitFor } from "@testing-library/dom";
 import BillsUI from "../views/BillsUI.js";
 import Bills from "../containers/Bills";
 import { bills } from "../fixtures/bills.js";
@@ -103,31 +103,29 @@ describe("Given I am connected as an employee", () => {
   });
 });
 
-// // new test get bills
-// describe("Testing get Bills", () => {
-//   Object.defineProperty(window, localStorage, { value: localStorageMock });
-//   window.localStorage.setItem("user", JSON.stringify({ type: "Employee" }));
+// new test get bills
+describe("When page is loaded", () => {
+  test("getBills should be called", async () => {
+    Object.defineProperty(window, localStorage, { value: localStorageMock });
+    window.localStorage.setItem("user", JSON.stringify({ type: "Employee" }));
 
-//   const html = BillsUI({ data: bills });
-//   document.body.innerHTML = html;
+    const onNavigate = (pathname) => {
+      document.body.innerHTML = ROUTES({ pathname });
+    };
 
-//   const onNavigate = (pathname) => {
-//     document.body.innerHTML = ROUTES({ pathname });
-//   };
+    const html = BillsUI({ data: bills });
+    document.body.innerHTML = html;
 
-//   const testBill = new Bills({
-//     document,
-//     onNavigate,
-//     store: null,
-//     localStorage: localStorageMock,
-//   });
-
-//   // jest.spyOn(testBill, "getBills");
-
-//   test("Should return mocked bills", () => {
-//     expect(testBill.getBills).toBe(1);
-//   });
-// });
+    const BillsMock = new Bills({
+      document,
+      onNavigate,
+      store: null,
+      localStorage: localStorageMock,
+    });
+    // const getBillsMock = jest.fn(() => BillsMock.getBills);
+    // expect(getBillsMock[0]).toBe(1);
+  });
+});
 
 // test d'intégration GET
 describe("Given I am a user connected as Employee", () => {
