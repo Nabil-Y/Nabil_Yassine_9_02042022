@@ -103,6 +103,32 @@ describe("Given I am connected as an employee", () => {
   });
 });
 
+// // new test get bills
+// describe("Testing get Bills", () => {
+//   Object.defineProperty(window, localStorage, { value: localStorageMock });
+//   window.localStorage.setItem("user", JSON.stringify({ type: "Employee" }));
+
+//   const html = BillsUI({ data: bills });
+//   document.body.innerHTML = html;
+
+//   const onNavigate = (pathname) => {
+//     document.body.innerHTML = ROUTES({ pathname });
+//   };
+
+//   const testBill = new Bills({
+//     document,
+//     onNavigate,
+//     store: null,
+//     localStorage: localStorageMock,
+//   });
+
+//   // jest.spyOn(testBill, "getBills");
+
+//   test("Should return mocked bills", () => {
+//     expect(testBill.getBills).toBe(1);
+//   });
+// });
+
 // test d'intégration GET
 describe("Given I am a user connected as Employee", () => {
   describe("When I navigate to Bills", () => {
