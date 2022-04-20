@@ -119,11 +119,13 @@ describe("When page is loaded", () => {
     const BillsMock = new Bills({
       document,
       onNavigate,
-      store: null,
+      store: mockStore,
       localStorage: localStorageMock,
     });
-    // const getBillsMock = jest.fn(() => BillsMock.getBills);
-    // expect(getBillsMock[0]).toBe(1);
+
+    jest.spyOn(BillsMock, "getBills");
+    const data = await BillsMock.getBills();
+    expect(data[0]["amount"]).toBe(bills[0]["amount"]);
   });
 });
 
