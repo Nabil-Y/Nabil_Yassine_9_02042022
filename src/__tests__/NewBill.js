@@ -44,7 +44,7 @@ describe("Given I am on NewBill Page", () => {
     });
   });
   describe("When I submit a file", () => {
-    test("Then handleSubmit function should be called", () => {
+    test("Then if I submit an authorized file, the alert window should not be displayed", () => {
       Object.defineProperty(window, "localStorage", {
         value: localStorageMock,
       });
@@ -73,8 +73,69 @@ describe("Given I am on NewBill Page", () => {
       const fileButton = screen.getByTestId("file");
       const handleChangeMock = jest.fn(() => newBillMock.handleChangeFile);
       fileButton.addEventListener("change", handleChangeMock);
-      fireEvent.change(fileButton);
+
+      const mockedFileValid = new File(["validFile"], "validFile.jpg", {
+        type: "image/jpg",
+      });
+
+      fireEvent.change(fileButton, {
+        target: {
+          files: [mockedFileValid],
+        },
+      });
+
       expect(handleChangeMock).toHaveBeenCalled();
+      expect(fileButton.files[0].name).toBe("validFile.jpg");
+
+      jest.spyOn(window, "alert").mockImplementation();
+      expect(window.alert).not.toHaveBeenCalled();
+    });
+
+    test("Then if I submit an unauthorized file, the alert window should be displayed", () => {
+      Object.defineProperty(window, "localStorage", {
+        value: localStorageMock,
+      });
+      window.localStorage.setItem(
+        "user",
+        JSON.stringify({
+          type: "Employee",
+        })
+      );
+
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname });
+      };
+
+      const html = NewBillUI();
+      document.body.innerHTML = html;
+
+      const newBillMock = new NewBill({
+        document,
+        onNavigate,
+        store: null,
+        localStorage: localStorageMock,
+      });
+
+      //to-do write assertion
+      const fileButton = screen.getByTestId("file");
+      const handleChangeMock = jest.fn(() => newBillMock.handleChangeFile);
+      fileButton.addEventListener("change", handleChangeMock);
+
+      const mockedFileInvalid = new File(["invalidFile"], "invalidFile.mp3", {
+        type: "file/mp3",
+      });
+
+      fireEvent.change(fileButton, {
+        target: {
+          files: [mockedFileInvalid],
+        },
+      });
+
+      expect(handleChangeMock).toHaveBeenCalled();
+      expect(fileButton.files[0].name).toBe("invalidFile.mp3");
+
+      jest.spyOn(window, "alert").mockImplementation();
+      expect(window.alert).toHaveBeenCalled();
     });
   });
 });
