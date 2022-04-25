@@ -60,7 +60,7 @@ export default class {
             }
           });
           console.log("length", bills.length);
-          return bills;
+          return bills.sort((a, b) => (a.date < b.date ? 1 : -1));
         });
     }
   };

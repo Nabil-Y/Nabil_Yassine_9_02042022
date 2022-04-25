@@ -11,18 +11,28 @@ import { localStorageMock } from "../__mocks__/localStorage.js";
 import mockStore from "../__mocks__/store";
 import router from "../app/Router.js";
 
+// Initial Setup
+
+Object.defineProperty(window, "localStorage", {
+  value: localStorageMock,
+});
+window.localStorage.setItem(
+  "user",
+  JSON.stringify({
+    type: "Employee",
+    email: "employee@test.tld",
+  })
+);
+
+const onNavigate = (pathname) => {
+  document.body.innerHTML = ROUTES({ pathname });
+};
+
+//Tests
+
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
     test("Then bill icon in vertical layout should be highlighted", async () => {
-      Object.defineProperty(window, "localStorage", {
-        value: localStorageMock,
-      });
-      window.localStorage.setItem(
-        "user",
-        JSON.stringify({
-          type: "Employee",
-        })
-      );
       const root = document.createElement("div");
       root.setAttribute("id", "root");
       document.body.append(root);
@@ -52,15 +62,6 @@ describe("Given I am connected as an employee", () => {
 
     // new test for new bill form button
     test("Then if I click on new bill button, the new bill form should be displayed", async () => {
-      Object.defineProperty(window, "localStorage", {
-        value: localStorageMock,
-      });
-      window.localStorage.setItem(
-        "user",
-        JSON.stringify({
-          type: "Employee",
-        })
-      );
       const root = document.createElement("div");
       root.setAttribute("id", "root");
       document.body.append(root);
@@ -76,15 +77,6 @@ describe("Given I am connected as an employee", () => {
 
     // new test for modal view of bill
     test("Then if I click the eye icon of a bill, the bill modal should be displayed", async () => {
-      Object.defineProperty(window, "localStorage", {
-        value: localStorageMock,
-      });
-      window.localStorage.setItem(
-        "user",
-        JSON.stringify({
-          type: "Employee",
-        })
-      );
       const root = document.createElement("div");
       root.setAttribute("id", "root");
       document.body.append(root);
@@ -106,13 +98,6 @@ describe("Given I am connected as an employee", () => {
 // new test get bills
 describe("When page is loaded", () => {
   test("getBills should be called", async () => {
-    Object.defineProperty(window, localStorage, { value: localStorageMock });
-    window.localStorage.setItem("user", JSON.stringify({ type: "Employee" }));
-
-    const onNavigate = (pathname) => {
-      document.body.innerHTML = ROUTES({ pathname });
-    };
-
     const html = BillsUI({ data: bills });
     document.body.innerHTML = html;
 
@@ -133,10 +118,6 @@ describe("When page is loaded", () => {
 describe("Given I am a user connected as Employee", () => {
   describe("When I navigate to Bills", () => {
     test("fetches bills from mock API GET", async () => {
-      localStorage.setItem(
-        "user",
-        JSON.stringify({ type: "Employee", email: "employee@test.tld" })
-      );
       const root = document.createElement("div");
       root.setAttribute("id", "root");
       document.body.append(root);
@@ -154,16 +135,6 @@ describe("Given I am a user connected as Employee", () => {
     describe("When an error occurs on API", () => {
       beforeEach(() => {
         jest.spyOn(mockStore, "bills");
-        Object.defineProperty(window, "localStorage", {
-          value: localStorageMock,
-        });
-        window.localStorage.setItem(
-          "user",
-          JSON.stringify({
-            type: "Employee",
-            email: "employee@test.tld",
-          })
-        );
       });
       test("fetches bills from an API and fails with 404 message error", async () => {
         mockStore.bills.mockImplementationOnce(() => {

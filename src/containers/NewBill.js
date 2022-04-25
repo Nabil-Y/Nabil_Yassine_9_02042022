@@ -28,7 +28,7 @@ export default class NewBill {
     const authorizedFormats = ["jpg", "jpeg", "png"];
 
     if (authorizedFormats.indexOf(fileFormat) === -1) {
-      alert("Wrong format. Only jpeg, jpg and png allowed");
+      alert("Mauvais format. Seulement jpeg, jpg et png autorisés");
       return;
     }
 
