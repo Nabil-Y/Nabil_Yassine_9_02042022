@@ -27,31 +27,30 @@ export default class NewBill {
     const fileFormat = fileName.substring(fileName.lastIndexOf(".") + 1);
     const authorizedFormats = ["jpg", "jpeg", "png"];
 
-    if (authorizedFormats.indexOf(fileFormat) === -1) {
-      alert("Mauvais format. Seulement jpeg, jpg et png autorisés");
-      return;
-    }
-
     const formData = new FormData();
     const email = JSON.parse(localStorage.getItem("user")).email;
     formData.append("file", file);
     formData.append("email", email);
 
-    this.store
-      .bills()
-      .create({
-        data: formData,
-        headers: {
-          noContentType: true,
-        },
-      })
-      .then(({ fileUrl, key }) => {
-        console.log(fileUrl);
-        this.billId = key;
-        this.fileUrl = fileUrl;
-        this.fileName = fileName;
-      })
-      .catch((error) => console.error(error));
+    if (authorizedFormats.indexOf(fileFormat) >= 0) {
+      this.store
+        .bills()
+        .create({
+          data: formData,
+          headers: {
+            noContentType: true,
+          },
+        })
+        .then(({ fileUrl, key }) => {
+          console.log(fileUrl);
+          this.billId = key;
+          this.fileUrl = fileUrl;
+          this.fileName = fileName;
+        })
+        .catch((error) => console.error(error));
+    } else {
+      alert("Mauvais format. Seulement jpeg, jpg et png autorisés");
+    }
   };
   handleSubmit = (e) => {
     e.preventDefault();
