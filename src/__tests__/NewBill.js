@@ -132,7 +132,7 @@ describe("Given I am on NewBill Page", () => {
         const newBillMock = new NewBill({
           document,
           onNavigate,
-          store: mockStore,
+          store: null,
           localStorage: localStorageMock,
         });
 
